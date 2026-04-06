@@ -62,7 +62,7 @@ jobs:
 
       - name: Start Container for Testing
         run: |
-          docker run -d -p 8081:80 --name test_app ghcr.io/${{ github.repository_owner }}/project3:latest
+          docker run -d -p 8081:80 --name test_app ghcr.io/totaltarizm/project3:latest
           sleep 5
 
       - name: Run k6 3-in-1 Tests
