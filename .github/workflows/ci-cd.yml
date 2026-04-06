@@ -1,82 +1,69 @@
-name: CI/CD Pipeline # Назва всього процесу автоматизації
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ] # Спрацьовує при кожному пуші в гілку main
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  # ЕТАП 1: Перевірка якості коду (Static Analysis)
+  # 1. Перевірка помилок у HTML коді
   linter:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Run HTML Hint
         run: |
           npm install -g htmlhint
-          htmlhint index.html # Перевірка HTML на помилки синтаксису
+          htmlhint index.html
 
-  # ЕТАП 2: Збірка та публікація образу (Containerization)
+  # 2. Збірка Docker-образу та відправка на GitHub
   build-and-push:
-    needs: linter # Почнеться тільки якщо лінтер пройшов успішно
+    needs: linter 
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # Дозвіл на запис у GitHub Packages
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
+      - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true # Відправляємо зібраний образ у хмару
-          tags: ghcr.io/${{ github.repository_owner }}/project3:latest
+          push: true
+          # Твій нік та назва проекту прописані вручну:
+          tags: ghcr.io/totaltarizm/project3:latest
 
-  # ЕТАП 3: Автоматизоване тестування (Dynamic Testing)
+  # 3. Запуск сайту та 3-х тестів k6
   test-quality:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Start Container for Testing
+      - name: Start Container
         run: |
-          # Запускаємо наш свіжозібраний образ у фоновому режимі
-          docker run -d -p 8081:80 --name test_app ghcr.io/${{ github.repository_owner }}/project3:latest
-          # Важливо: чекаємо, поки сервер Nginx ініціалізується всередині контейнера
-          sleep 10 
-
-      - name: Run k6 Load Tests
+          # Запускаємо сайт на порту 8081
+          docker run -d -p 8081:80 --name test_app ghcr.io/totaltarizm/project3:latest
+          sleep 10 # Чекаємо, поки сайт завантажиться
+      - name: Run k6 Tests
         uses: grafana/k6-action@v0.3.1
         with:
           filename: load-test.js
-        # Ми прибрали --network, щоб не було помилки "unknown flag"
-        # k6 за замовчуванням зможе достукатися до порту 8081 на localhost раннера
-
-      - name: Show logs if failed
-        if: failure() # Виконається лише якщо тести впали
-        run: docker logs test_app
-
-      - name: Stop and Cleanup
-        if: always() # Виконується завжди, щоб не лишати "сміття" в системі
+      - name: Cleanup
+        if: always()
         run: docker rm -f test_app || true
