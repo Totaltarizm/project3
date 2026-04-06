@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інженер | Портфоліо</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #38bdf8;
+            --card-bg: #1e293b;
+            --header-bg: rgba(15, 23, 42, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid #334155;
+            padding: 1rem 2rem;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--accent-color);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            border: 1px solid #334155;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-color);
+        }
+
+        .skill-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .skill-card ul {
+            list-style: none;
+            color: var(--text-secondary);
+        }
+
+        .skill-card li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .skill-card li::before {
+            content: '•';
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+
+        .contact-section {
+            text-align: center;
+            background: #1e293b;
+            padding: 4rem 2rem;
+            border-radius: 1rem;
+            margin-top: 2rem;
+        }
+
+        .contact-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 1rem 2.5rem;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 0.5rem;
+            transition: opacity 0.3s;
+        }
+
+        .contact-link:hover {
+            opacity: 0.9;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            border-top: 1px solid #334155;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            nav ul { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="#" class="logo">ENGINEER_PORTFOLIO</a>
+            <ul>
+                <li><a href="#about">Про мене</a></li>
+                <li><a href="#skills">Навички</a></li>
+                <li><a href="#contact">Контакти</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero" class="hero">
+        <h1>Інженер-розробник</h1>
+        <p>Спеціаліст у сфері вбудованих систем, FPGA та цифрової схемотехніки. Створюю надійні рішення на межі заліза та коду.</p>
+    </section>
+
+    <section id="skills">
+        <h2 class="section-title">Технічні навички</h2>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <h3>VHDL / FPGA</h3>
+                <ul>
+                    <li>Розробка RTL-модулів на VHDL</li>
+                    <li>Робота з Xilinx Vivado та Intel Quartus</li>
+                    <li>Симуляція в ModelSim / QuestaSim</li>
+                    <li>Оптимізація таймінгів та ресурсів</li>
+                    <li>Проектування цифрових інтерфейсів</li>
+                </ul>
+            </div>
+            <div class="skill-card">
+                <h3>Arduino / Embedded</h3>
+                <ul>
+                    <li>Програмування на C++ (AVR, ESP32, STM32)</li>
+                    <li>Робота з периферією: UART, SPI, I2C, ADC</li>
+                    <li>Інтеграція сенсорів та виконавчих механізмів</li>
+                    <li>Розробка драйверів пристроїв</li>
+                    <li>Швидке прототипування систем</li>
+                </ul>
+            </div>
+            <div class="skill-card">
+                <h3>Додатково</h3>
+                <ul>
+                    <li>Проектування друкованих плат (KiCad/Altium)</li>
+                    <li>Відлагодження за допомогою осцилографа</li>
+                    <li>Git / Командна розробка</li>
+                    <li>Технічна документація</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">Професійний підхід</h2>
+        <p style="max-width: 800px; margin: 0 auto; text-align: center; font-size: 1.1rem; color: var(--text-secondary);">
+            Мій досвід охоплює повний цикл розробки електронних пристроїв: від ідеї та архітектури до реалізації на FPGA або мікроконтролерах. Я фокусуюся на написанні чистого, документованого коду та створенні стабільних апаратних рішень.
+        </p>
+    </section>
+
+    <section id="contact">
+        <div class="contact-section">
+            <h2 style="margin-bottom: 1rem;">Готові до співпраці?</h2>
+            <p>Зв'яжіться зі мною для обговорення вашого проекту.</p>
+            <a href="mailto:engineer@example.com" class="contact-link">Надіслати листа</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Інженер-розробник. Всі права захищені.</p>
+    </footer>
+
+</body>
+</html>
