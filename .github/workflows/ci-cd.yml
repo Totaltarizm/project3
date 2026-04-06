@@ -53,20 +53,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Start Container
+      - name: Run Website Container
         run: |
-          docker run -d -p 8081:80 --name test_app ghcr.io/totaltarizm/project3:latest
+          # Запускаємо твій образ на порту 8081
+          docker run -d --name test_app -p 8081:80 ghcr.io/totaltarizm/project3:latest
           sleep 10
 
-      - name: Run k6 Tests
-        uses: grafana/k6-action@v0.3.1
-        with:
-          filename: load-test.js
-          flags: --network=host
-
-      - name: Show logs if failed
-        if: failure()
-        run: docker logs test_app
+      - name: Run k6 Load Test
+        # Використовуємо прямий запуск через docker run з мережею host
+        # Це дозволить k6 побачити порт 8081 на localhost
+        run: |
+          docker run --rm --network host -i -v ${{ github.workspace }}:/io -w /io grafana/k6 run load-test.js
 
       - name: Cleanup
         if: always()
