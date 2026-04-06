@@ -7,30 +7,26 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # 1. Джоба для лінтера (перевірка коду)
   linter:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
-      - name: Run HTML Hint (Linter for your site)
+      - name: Run HTML Hint
         run: |
-          # Встановлюємо простий лінтер для HTML
           npm install -g htmlhint
           htmlhint index.html
 
-  # 2. Джоба для збірки та пушу Docker image
   build-and-push:
-    needs: linter # Запускати тільки якщо лінтер пройшов успішно
+    needs: linter 
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # Дозвіл на запис у GitHub Packages
-
+      packages: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -40,13 +36,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@v5 # v5 або v7 (перевірена версія)
         with:
           context: .
           push: true
           tags: ghcr.io/totaltarizm/project3:latest
 
-   test-quality:
+  test-quality: # Тепер відступ правильний (на рівні з іншими jobs)
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
@@ -62,14 +58,17 @@ jobs:
 
       - name: Start Container for Testing
         run: |
+          # Видаляємо старий, якщо він раптом лишився, і запускаємо новий
+          docker rm -f test_app || true
           docker run -d -p 8081:80 --name test_app ghcr.io/totaltarizm/project3:latest
-          sleep 5
+          sleep 10 # Даємо Nginx трохи більше часу на старт
 
-      - name: Run k6 3-in-1 Tests
+      - name: Run k6 Tests
         uses: grafana/k6-action@v0.3.1
         with:
           filename: load-test.js
+          flags: --network=host # Додаємо, щоб k6 бачив localhost контейнера
 
       - name: Stop and Cleanup
-        if: always() # Видалити контейнер навіть якщо тести впали
-        run: docker rm -f test_app
+        if: always()
+        run: docker rm -f test_app || true
